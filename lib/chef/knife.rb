@@ -238,10 +238,6 @@ class Chef
       exit 10
     end
 
-    def self.working_directory
-      ENV['PWD'] || Dir.pwd
-    end
-
     def self.reset_config_path!
       @@chef_config_dir = nil
     end
@@ -253,7 +249,7 @@ class Chef
     def self.chef_config_dir
       if @@chef_config_dir.nil? # share this with subclasses
         @@chef_config_dir = false
-        full_path = working_directory.split(File::SEPARATOR)
+        full_path = Dir.pwd.split(File::SEPARATOR)
         (full_path.length - 1).downto(0) do |i|
           candidate_directory = File.join(full_path[0..i] + [".chef" ])
           if File.exist?(candidate_directory) && File.directory?(candidate_directory)
