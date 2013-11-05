@@ -66,7 +66,12 @@ class Chef
         ui.info("Downloading #{@cookbook_name} cookbook version #{@version}")
 
         cookbook = rest.get_rest("cookbooks/#{@cookbook_name}/#{@version}")
-        manifest = cookbook.manifest
+
+        # This works, see link for why
+        # http://www.ludumdare.com/compo/wp-content/uploads/2013/04/i-have-no-idea-what-im-doing-dog.jpg
+        manifest = cookbook.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+        require 'ostruct'
+        cookbook = ::OpenStruct.new(cookbook)
 
         basedir = File.join(config[:download_directory], "#{@cookbook_name}-#{cookbook.version}")
         if File.exists?(basedir)
